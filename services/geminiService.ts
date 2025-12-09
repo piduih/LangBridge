@@ -1,8 +1,10 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import { Language } from "../types";
 
-// Removed top-level initialization to prevent crash on load if key is missing
-// const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get key from storage or env
+const getApiKey = () => {
+  return localStorage.getItem("gemini_api_key") || process.env.API_KEY;
+};
 
 // System instruction to ensure high-quality translation including dialects
 const SYSTEM_INSTRUCTION = `You are a professional, high-speed translator specializing in Malay (Bahasa Melayu) and Mandarin (Simplified Chinese). 
@@ -20,12 +22,13 @@ export const streamTranslation = async (
 ): Promise<string> => {
   if (!text.trim()) return "";
 
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please click the Gear icon to set your API Key.");
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     const response = await ai.models.generateContentStream({
       model: "gemini-2.5-flash",
       contents: text,
@@ -90,12 +93,13 @@ const playPCM = async (pcmData: Uint8Array, sampleRate: number = 24000) => {
 export const speakText = async (text: string): Promise<void> => {
   if (!text.trim()) return;
 
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please click the Gear icon to set your API Key.");
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
       contents: {

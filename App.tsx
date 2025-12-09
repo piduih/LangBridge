@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppMode } from './types';
 import { TextMode } from './components/TextMode';
 import { LiveMode } from './components/LiveMode';
@@ -13,12 +13,34 @@ const VoiceIcon = () => (
 const HelpIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
 );
+const SettingsIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+);
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.LIVE);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-  
+  const [showSettings, setShowSettings] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+
+  useEffect(() => {
+    const storedKey = localStorage.getItem('gemini_api_key');
+    if (storedKey) setApiKey(storedKey);
+  }, []);
+
+  const handleSaveKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('gemini_api_key', apiKey.trim());
+    } else {
+      localStorage.removeItem('gemini_api_key');
+    }
+    setShowSettings(false);
+    // Reload to ensure all services pick up the new key immediately if needed, 
+    // though our services read from localStorage dynamically.
+    window.location.reload(); 
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#f9fafe] overflow-hidden font-sc">
       {/* Header */}
@@ -53,13 +75,22 @@ const App: React.FC = () => {
           </button>
         </div>
 
-        <button 
-          onClick={() => setShowGuide(true)}
-          className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
-          title="Panduan / 指南"
-        >
-          <HelpIcon />
-        </button>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => setShowSettings(true)}
+            className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
+            title="Tetapan API / API设置"
+          >
+            <SettingsIcon />
+          </button>
+          <button 
+            onClick={() => setShowGuide(true)}
+            className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
+            title="Panduan / 指南"
+          >
+            <HelpIcon />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -87,6 +118,55 @@ const App: React.FC = () => {
         </div>
       </footer>
 
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Tetapan API / API 设置</h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">API Key</label>
+              <input 
+                type="password" 
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="AIzaSy..."
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                Kunci ini disimpan secara lokal di pelayar anda.
+                <br/>此密钥仅存储在您的浏览器本地。
+              </p>
+            </div>
+
+            <div className="bg-indigo-50 p-4 rounded-lg mb-6">
+              <h4 className="text-sm font-semibold text-indigo-900 mb-2">Cara dapatkan Key:</h4>
+              <ol className="list-decimal list-inside text-xs text-indigo-800 space-y-1">
+                <li>Klik <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="underline font-bold">Pautan Rasmi Ini</a>.</li>
+                <li>Log masuk akaun.</li>
+                <li>Klik "Create API Key".</li>
+                <li>Salin dan tampal kunci tersebut di sini.</li>
+              </ol>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setShowSettings(false)}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm"
+              >
+                Batal / 取消
+              </button>
+              <button 
+                onClick={handleSaveKey}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors text-sm"
+              >
+                Simpan & Muat Semula / 保存
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Privacy Modal */}
       {showPrivacy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm" onClick={() => setShowPrivacy(false)}>
@@ -95,7 +175,7 @@ const App: React.FC = () => {
             <div className="space-y-3 text-sm text-gray-600 font-sc">
               <p>
                 <span className="font-medium text-gray-900">Dasar Privasi / 隐私政策:</span><br/>
-                Kami menghormati privasi anda. Aplikasi ini tidak menyimpan, merekod, atau berkongsi data peribadi anda. Semua pemprosesan suara dan teks dilakukan secara selamat dalam masa nyata menggunakan Google Gemini API.
+                Kami menghormati privasi anda. Aplikasi ini tidak menyimpan, merekod, atau berkongsi data peribadi anda. Semua pemprosesan suara dan teks dilakukan secara selamat dalam masa nyata menggunakan teknologi AI terkini.
                 <br/><span className="text-xs text-gray-400 mt-1 block">我们尊重您的隐私。此应用程序不存储、记录或共享您的个人数据。</span>
               </p>
               <p>
@@ -128,6 +208,20 @@ const App: React.FC = () => {
             </div>
             
             <div className="space-y-6 font-sc">
+              {/* API Key Guide */}
+              <div className="flex gap-4 bg-yellow-50 p-3 rounded-xl border border-yellow-100">
+                <div className="flex-none w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                  <SettingsIcon />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-1">Tetapan API / API设置</h4>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Jika aplikasi tidak berfungsi, sila masukkan <strong>API Key</strong> anda sendiri di menu Tetapan.<br/>
+                    <span className="text-xs text-gray-500">如果应用无法运行，请在设置菜单中输入您自己的 API 密钥。</span>
+                  </p>
+                </div>
+              </div>
+
               {/* Text Mode Guide */}
               <div className="flex gap-4">
                 <div className="flex-none w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600">

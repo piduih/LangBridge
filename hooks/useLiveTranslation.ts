@@ -122,11 +122,13 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
     setError(null);
 
     try {
-      if (!process.env.API_KEY) {
-        throw new Error("API Key missing. Check Settings.");
+      const apiKey = localStorage.getItem("gemini_api_key") || process.env.API_KEY;
+
+      if (!apiKey) {
+        throw new Error("API Key missing. Click the Gear icon to set it.");
       }
 
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: apiKey });
       
       // Initialize Audio Contexts
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
