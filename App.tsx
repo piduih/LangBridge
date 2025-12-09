@@ -15,10 +15,10 @@ const HelpIcon = () => (
 );
 
 const App: React.FC = () => {
-  const [mode, setMode] = useState<AppMode>(AppMode.TEXT);
+  const [mode, setMode] = useState<AppMode>(AppMode.LIVE);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-
+  
   return (
     <div className="flex flex-col h-screen bg-[#f9fafe] overflow-hidden font-sc">
       {/* Header */}
@@ -27,20 +27,14 @@ const App: React.FC = () => {
           <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
             J
           </div>
-          <h1 className="font-semibold text-gray-800 text-lg tracking-tight hidden md:block">Jambatan Bahasa</h1>
-          <h1 className="font-semibold text-gray-800 text-lg tracking-tight md:hidden">Jambatan</h1>
+          <div className="flex flex-col">
+             <h1 className="font-semibold text-gray-800 text-lg tracking-tight leading-none hidden md:block">Jambatan Bahasa</h1>
+             <h1 className="font-semibold text-gray-800 text-lg tracking-tight leading-none md:hidden">Jambatan</h1>
+          </div>
         </div>
         
         {/* Mode Toggle */}
         <div className="flex bg-gray-100 p-1 rounded-xl mx-2">
-          <button
-            onClick={() => setMode(AppMode.TEXT)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-              mode === AppMode.TEXT ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <TextIcon /> <span className="hidden sm:inline">Teks / 文字</span><span className="sm:hidden">Teks</span>
-          </button>
           <button
              onClick={() => setMode(AppMode.LIVE)}
              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -48,6 +42,14 @@ const App: React.FC = () => {
             }`}
           >
             <VoiceIcon /> <span className="hidden sm:inline">Langsung / 实时</span><span className="sm:hidden">Live</span>
+          </button>
+          <button
+            onClick={() => setMode(AppMode.TEXT)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+              mode === AppMode.TEXT ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <TextIcon /> <span className="hidden sm:inline">Teks / 文字</span><span className="sm:hidden">Teks</span>
           </button>
         </div>
 
