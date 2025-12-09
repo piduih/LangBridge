@@ -26,7 +26,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const storedKey = localStorage.getItem('gemini_api_key');
-    if (storedKey) setApiKey(storedKey);
+    if (storedKey) {
+      setApiKey(storedKey);
+    } else {
+      // Automatically open settings if no key is found
+      setShowSettings(true);
+    }
   }, []);
 
   const handleSaveKey = () => {
