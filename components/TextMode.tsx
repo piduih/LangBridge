@@ -43,9 +43,20 @@ export const TextMode: React.FC = () => {
       await streamTranslation(text, (chunk) => {
         setOutput(chunk);
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setOutput('Error processing translation.');
+      const errString = e.toString() || e.message || "";
+      // Check for common API Key errors
+      if (
+        errString.includes("API Key") || 
+        errString.includes("403") || 
+        errString.includes("400") ||
+        errString.includes("permission denied")
+      ) {
+        setOutput("⚠️ Ralat API: Sila masukkan API Key anda di menu Tetapan (Ikon Gear) untuk menggunakan aplikasi ini.\n\n⚠️ API 错误：请在设置菜单（齿轮图标）中输入您的 API 密钥以使用此应用程序。");
+      } else {
+        setOutput('Ralat: ' + (e.message || "Gagal menterjemah / 翻译失败"));
+      }
     } finally {
       setIsTranslating(false);
     }
@@ -66,8 +77,12 @@ export const TextMode: React.FC = () => {
     setIsSpeaking(true);
     try {
       await speakText(output);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to play audio", e);
+      const errString = e.toString() || e.message || "";
+      if (errString.includes("API Key") || errString.includes("403")) {
+         alert("Sila masukkan API Key di Tetapan / 请在设置中输入 API 密钥");
+      }
     } finally {
       setIsSpeaking(false);
     }

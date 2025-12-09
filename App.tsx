@@ -16,12 +16,16 @@ const HelpIcon = () => (
 const SettingsIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
 );
+const AwardIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+);
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.LIVE);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   const [apiKey, setApiKey] = useState('');
 
   useEffect(() => {
@@ -82,6 +86,13 @@ const App: React.FC = () => {
 
         <div className="flex items-center gap-1">
           <button 
+            onClick={() => setShowComparison(true)}
+            className="text-gray-400 hover:text-indigo-600 transition-colors p-2 hidden sm:block"
+            title="Kelebihan / 优势"
+          >
+            <AwardIcon />
+          </button>
+          <button 
             onClick={() => setShowSettings(true)}
             className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
             title="Tetapan API / API设置"
@@ -114,14 +125,97 @@ const App: React.FC = () => {
           <div>
             &copy; {new Date().getFullYear()} <a href="https://afiladesign.com" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 font-medium transition-colors">afiladesign.com</a>
           </div>
-          <button 
-            onClick={() => setShowPrivacy(true)}
-            className="hover:text-indigo-600 transition-colors"
-          >
-            Terma & Privasi / 条款与隐私
-          </button>
+          <div className="flex gap-4">
+             {/* Mobile Comparison Link */}
+             <button 
+              onClick={() => setShowComparison(true)}
+              className="sm:hidden hover:text-indigo-600 transition-colors"
+            >
+              Kelebihan / 优势
+            </button>
+            <button 
+              onClick={() => setShowPrivacy(true)}
+              className="hover:text-indigo-600 transition-colors"
+            >
+              Terma & Privasi / 条款与隐私
+            </button>
+          </div>
         </div>
       </footer>
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm" onClick={() => setShowComparison(false)}>
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <span className="bg-indigo-100 p-1.5 rounded-lg text-indigo-600"><AwardIcon /></span>
+                Kenapa Kami? / 为什么选择我们?
+              </h3>
+              <button onClick={() => setShowComparison(false)} className="text-gray-400 hover:text-gray-600">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+            
+            <div className="font-sc">
+              <div className="overflow-hidden rounded-xl border border-gray-200">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-gray-50 text-gray-500 font-medium">
+                    <tr>
+                      <th className="px-4 py-3">Ciri / 功能</th>
+                      <th className="px-4 py-3 text-indigo-600">Jambatan Bahasa</th>
+                      <th className="px-4 py-3 text-gray-400">Google Translate</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-gray-700">Dialek & Slanga<br/><span className="text-xs text-gray-400 font-normal">方言与俚语</span></td>
+                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
+                        ✅ Cemerlang / 卓越<br/><span className="text-xs opacity-75">Faham Bahasa Pasar / 理解巴刹语</span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        ⚠️ Terhad / 有限<br/><span className="text-xs opacity-75">Hanya Baku / 仅限标准语</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-gray-700">Mod Suara<br/><span className="text-xs text-gray-400 font-normal">语音模式</span></td>
+                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
+                        ✅ Serentak / 实时 (Live)<br/><span className="text-xs opacity-75">Tanpa henti / 无间断</span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        ⏳ Gilir-gilir / 轮流<br/><span className="text-xs opacity-75">Kena tunggu / 需等待</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-gray-700">Konteks Budaya<br/><span className="text-xs text-gray-400 font-normal">文化语境</span></td>
+                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
+                        ✅ Tinggi / 高<br/><span className="text-xs opacity-75">Lokal / 本地化</span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        ⚪ Umum / 一般<br/><span className="text-xs opacity-75">Global / 全球化</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-6 bg-green-50 p-4 rounded-xl border border-green-100 text-sm text-green-800 space-y-2">
+                <p><strong>Rumusan:</strong> Aplikasi ini dibina khas untuk perbualan natural rakyat Malaysia, memahami perkataan seperti "makan dak lagi?", "guane gamok", dan loghat Mandarin tempatan.</p>
+                <p><strong>总结:</strong> 此应用专为马来西亚人的自然对话打造，能理解“makan dak lagi?”等本地词汇及本地华语方言。</p>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button 
+                  onClick={() => setShowComparison(false)}
+                  className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+                >
+                  Tutup / 关闭
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Settings Modal */}
       {showSettings && (
@@ -145,12 +239,12 @@ const App: React.FC = () => {
             </div>
 
             <div className="bg-indigo-50 p-4 rounded-lg mb-6">
-              <h4 className="text-sm font-semibold text-indigo-900 mb-2">Cara dapatkan Key:</h4>
+              <h4 className="text-sm font-semibold text-indigo-900 mb-2">Cara dapatkan Key / 如何获取密钥:</h4>
               <ol className="list-decimal list-inside text-xs text-indigo-800 space-y-1">
-                <li>Klik <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="underline font-bold">Pautan Rasmi Ini</a>.</li>
-                <li>Log masuk akaun.</li>
-                <li>Klik "Create API Key".</li>
-                <li>Salin dan tampal kunci tersebut di sini.</li>
+                <li>Klik <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="underline font-bold">Pautan Rasmi Ini</a> / 点击<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="underline font-bold">此官方链接</a>.</li>
+                <li>Log masuk akaun / 登录帐户.</li>
+                <li>Klik "Create API Key" / 点击 "Create API Key".</li>
+                <li>Salin dan tampal di sini / 复制并粘贴到此处.</li>
               </ol>
             </div>
 
@@ -163,7 +257,12 @@ const App: React.FC = () => {
               </button>
               <button 
                 onClick={handleSaveKey}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors text-sm"
+                disabled={!apiKey.trim()}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                  !apiKey.trim() 
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                }`}
               >
                 Simpan & Muat Semula / 保存
               </button>

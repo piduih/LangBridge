@@ -133,6 +133,7 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
       // Initialize Audio Contexts
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       const ctx = new AudioContextClass({ sampleRate: OUTPUT_SAMPLE_RATE });
+      await ctx.resume(); // Ensure context is active (fixes user gesture issues)
       audioContextRef.current = ctx;
       nextStartTimeRef.current = ctx.currentTime;
 
@@ -229,8 +230,17 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
           },
           onerror: (e) => {
             console.error("Session Error", e);
-            // This callback catches runtime errors, but not necessarily initial connection errors
-            setError("Connection error. Please try again.");
+            // This callback catches runtime errors
+            // Try to provide a helpful message if it looks like an auth error
+            let msg = "Connection error. Please try again.";
+            try {
+                // @ts-ignore
+                const errMsg = e.message || JSON.stringify(e);
+                if (errMsg.includes("403") || errMsg.includes("400") || errMsg.includes("permission")) {
+                    msg = "Sila masukkan API Key di Tetapan / 请在设置中输入 API 密钥";
+                }
+            } catch {}
+            setError(msg);
             disconnect();
           }
         },
@@ -253,7 +263,19 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
 
     } catch (err: any) {
       console.error("Connection failed:", err);
-      setError(err.message || "Failed to start session");
+      let msg = err.message || "Failed to start session";
+      
+      // Detect common API Key related errors
+      if (
+        msg.includes("API Key") || 
+        msg.includes("403") || 
+        msg.includes("400") || 
+        msg.includes("permission denied")
+      ) {
+        msg = "Sila masukkan API Key di Tetapan / 请在设置中输入 API 密钥";
+      }
+
+      setError(msg);
       setIsConnecting(false);
       disconnect(); // Ensure cleanup
     }
