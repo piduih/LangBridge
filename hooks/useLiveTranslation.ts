@@ -122,6 +122,10 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
     setError(null);
 
     try {
+      if (!process.env.API_KEY) {
+        throw new Error("API Key missing. Check Settings.");
+      }
+
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       // Initialize Audio Contexts
