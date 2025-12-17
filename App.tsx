@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppMode } from './types';
 import { TextMode } from './components/TextMode';
 import { LiveMode } from './components/LiveMode';
+import { Analytics } from '@vercel/analytics/react';
 
 // Simple Icons
 const TextIcon = () => (
@@ -169,30 +170,30 @@ const App: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     <tr>
+                      <td className="px-4 py-3 font-medium text-gray-700">Gaya Bahasa<br/><span className="text-xs text-gray-400 font-normal">语言风格</span></td>
+                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
+                        ✅ ELI5 (Mudah)<br/><span className="text-xs opacity-75">Santai & Ringkas / 简单易懂</span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        ⚠️ Baku/Formal<br/><span className="text-xs opacity-75">Terlalu skema / 过于正式</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-gray-700">Kefahaman<br/><span className="text-xs text-gray-400 font-normal">理解难度</span></td>
+                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
+                        ✅ Untuk Semua<br/><span className="text-xs opacity-75">Mesra Pemula / 适合初学者</span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        ⚪ Rawak<br/><span className="text-xs opacity-75">Kadang pelik / 有时生硬</span>
+                      </td>
+                    </tr>
+                    <tr>
                       <td className="px-4 py-3 font-medium text-gray-700">Dialek & Slanga<br/><span className="text-xs text-gray-400 font-normal">方言与俚语</span></td>
                       <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
-                        ✅ Cemerlang / 卓越<br/><span className="text-xs opacity-75">Faham Bahasa Pasar / 理解巴刹语</span>
+                        ✅ Faham Sepenuhnya<br/><span className="text-xs opacity-75">Loghat -> Bahasa Mudah</span>
                       </td>
                       <td className="px-4 py-3 text-gray-500">
-                        ⚠️ Terhad / 有限<br/><span className="text-xs opacity-75">Hanya Baku / 仅限标准语</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 font-medium text-gray-700">Mod Suara<br/><span className="text-xs text-gray-400 font-normal">语音模式</span></td>
-                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
-                        ✅ Serentak / 实时 (Live)<br/><span className="text-xs opacity-75">Tanpa henti / 无间断</span>
-                      </td>
-                      <td className="px-4 py-3 text-gray-500">
-                        ⏳ Gilir-gilir / 轮流<br/><span className="text-xs opacity-75">Kena tunggu / 需等待</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 font-medium text-gray-700">Konteks Budaya<br/><span className="text-xs text-gray-400 font-normal">文化语境</span></td>
-                      <td className="px-4 py-3 bg-indigo-50/50 text-indigo-700 font-medium">
-                        ✅ Tinggi / 高<br/><span className="text-xs opacity-75">Lokal / 本地化</span>
-                      </td>
-                      <td className="px-4 py-3 text-gray-500">
-                        ⚪ Umum / 一般<br/><span className="text-xs opacity-75">Global / 全球化</span>
+                        ⚠️ Terhad / 有限<br/><span className="text-xs opacity-75">Salah faham / 误解</span>
                       </td>
                     </tr>
                   </tbody>
@@ -200,8 +201,8 @@ const App: React.FC = () => {
               </div>
 
               <div className="mt-6 bg-green-50 p-4 rounded-xl border border-green-100 text-sm text-green-800 space-y-2">
-                <p><strong>Rumusan:</strong> Aplikasi ini dibina khas untuk perbualan natural rakyat Malaysia, memahami perkataan seperti "makan dak lagi?", "guane gamok", dan loghat Mandarin tempatan.</p>
-                <p><strong>总结:</strong> 此应用专为马来西亚人的自然对话打造，能理解“makan dak lagi?”等本地词汇及本地华语方言。</p>
+                <p><strong>Konsep ELI5:</strong> Kami menterjemah maksud, bukan sekadar perkataan. Ayat kompleks dipermudahkan supaya kanak-kanak 5 tahun pun boleh faham.</p>
+                <p><strong>ELI5 概念:</strong> 我们翻译的是意思，不仅仅是文字。复杂的句子会被简化，即使是5岁的孩子也能听懂。</p>
               </div>
 
               <div className="mt-6 flex justify-end">

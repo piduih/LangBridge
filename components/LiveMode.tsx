@@ -9,27 +9,6 @@ const StopIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/></svg>
 );
 
-const Waveform: React.FC<{ volume: number, active: boolean }> = ({ volume, active }) => {
-  // Create a visual representation of audio
-  const bars = 5;
-  
-  return (
-    <div className="flex items-center justify-center gap-1 h-16">
-      {Array.from({ length: bars }).map((_, i) => {
-        // Pseudo-random animation based on volume
-        const height = active ? Math.max(10, volume * 100 * (Math.random() * 0.5 + 0.5)) : 4;
-        return (
-          <div 
-            key={i}
-            className={`w-3 rounded-full transition-all duration-75 ${active ? 'bg-indigo-500' : 'bg-gray-300'}`}
-            style={{ height: `${height}%` }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
 export const LiveMode: React.FC = () => {
   const { isConnected, isConnecting, error, volume, connect, disconnect } = useLiveTranslation();
 
@@ -46,16 +25,16 @@ export const LiveMode: React.FC = () => {
 
       {/* Visualizer Circle */}
       <div className="relative w-64 h-64 flex items-center justify-center mb-12">
-        {/* Pulsing rings when active */}
+        {/* Pulsing rings when active - Responsive to volume */}
         {isConnected && (
           <>
              <div 
                className="absolute inset-0 bg-indigo-100 rounded-full opacity-50"
-               style={{ transform: `scale(${1 + volume * 0.5})`, transition: 'transform 0.1s ease-out' }}
+               style={{ transform: `scale(${1 + volume * 0.5})`, transition: 'transform 0.05s ease-out' }}
              />
              <div 
                className="absolute inset-4 bg-indigo-200 rounded-full opacity-30"
-               style={{ transform: `scale(${1 + volume * 0.3})`, transition: 'transform 0.1s ease-out' }}
+               style={{ transform: `scale(${1 + volume * 0.3})`, transition: 'transform 0.05s ease-out' }}
              />
           </>
         )}
@@ -66,10 +45,18 @@ export const LiveMode: React.FC = () => {
           ${isConnected ? 'bg-white border-4 border-indigo-500' : 'bg-white border border-gray-200'}
         `}>
            {isConnected ? (
-             <div className="h-20 flex items-center gap-1">
-               <div className="w-2 bg-indigo-500 rounded-full animate-[bounce_1s_infinite]" style={{ height: `${20 + volume * 80}%`, animationDelay: '0ms' }}></div>
-               <div className="w-2 bg-indigo-500 rounded-full animate-[bounce_1s_infinite]" style={{ height: `${20 + volume * 80}%`, animationDelay: '100ms' }}></div>
-               <div className="w-2 bg-indigo-500 rounded-full animate-[bounce_1s_infinite]" style={{ height: `${20 + volume * 80}%`, animationDelay: '200ms' }}></div>
+             <div className="flex items-center gap-1.5 h-16">
+               {/* 5-bar Waveform that reacts to volume */}
+               {[0.4, 0.7, 1.0, 0.7, 0.4].map((scale, i) => (
+                  <div 
+                    key={i} 
+                    className="w-2.5 bg-indigo-500 rounded-full transition-all duration-75 ease-out"
+                    style={{ 
+                      height: `${Math.max(15, volume * 100 * scale)}%`,
+                      opacity: Math.max(0.4, volume * 1.5)
+                    }}
+                  />
+               ))}
              </div>
            ) : (
              <span className="text-gray-300">

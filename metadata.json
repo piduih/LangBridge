@@ -1,6 +1,6 @@
 {
   "name": "Jambatan Bahasa (Language Bridge)",
-  "description": "A lightning-fast, real-time bidirectional translator for Malay (BM) and Mandarin using Google Gemini Flash and Live API. Features text and voice modes.",
+  "description": "An ELI5 (Simple & Easy) real-time translator for Malay and Mandarin. Makes communication effortless and easy to understand for everyone.",
   "requestFramePermissions": [
     "microphone"
   ]

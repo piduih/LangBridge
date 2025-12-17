@@ -170,7 +170,8 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
               let sum = 0;
               for(let i=0; i<inputData.length; i++) sum += inputData[i] * inputData[i];
               const rms = Math.sqrt(sum / inputData.length);
-              setVolume(Math.min(1, rms * 5));
+              // Boost the volume for better visual feedback
+              setVolume(Math.min(1, rms * 10));
 
               // Send to API
               const b64Data = encodePCM(inputData);
@@ -249,11 +250,15 @@ export const useLiveTranslation = (): UseLiveTranslationReturn => {
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
           },
-          systemInstruction: `You are a simultaneous interpreter between Malay (Bahasa Melayu) and Mandarin. 
-          You are expert in handling native dialects, slang, and colloquial speech in both languages (e.g. Bahasa Pasar, regional Malay dialects).
-          If you hear Malay, translate it to Mandarin spoken audio. 
-          If you hear Mandarin, translate it to Malay spoken audio. 
-          Keep translations concise, natural, and immediate. Do not chat, only translate.`,
+          systemInstruction: `You are a lightning-fast simultaneous interpreter between Malay (Bahasa Melayu) and Mandarin.
+          
+          CRITICAL INSTRUCTIONS:
+          1. TRANSLATE IMMEDIATELY. Zero latency.
+          2. NO PREAMBLE. Do not say "Translation:" or "In Malay:". Just speak the translation.
+          3. ELI5: Simple words only. Short sentences.
+          4. If input is Malay -> Speak Mandarin.
+          5. If input is Mandarin -> Speak Malay.
+          6. Ignore short pauses, wait for a complete thought, then translate instantly.`,
         }
       });
       
